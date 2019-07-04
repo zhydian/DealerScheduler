@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { Route, Switch,Redirect } from "react-router";
 import { Jumbotron } from 'reactstrap'
-import { getUsers } from '../redux/ActionCreators'
+import { getUsers, getSchedules } from '../redux/ActionCreators'
 import Home from './HomeComponent'
 import { connect } from 'react-redux';
 
 function Header (props) {
     return(
        
-    <div className="sticky-top header">            
-    <Jumbotron>
-        <h1>Mat's BoilerPlate</h1>
-    </Jumbotron>
+    <div className="sticky-top header">
+
     </div>
     )
 }
@@ -37,7 +35,7 @@ class Main extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    getUsers: () => dispatch(getUsers()),
+    getUsers: () => dispatch(getUsers())
 })
 
 const mapStateToProps = state => {

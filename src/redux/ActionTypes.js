@@ -1,2 +1,10 @@
 export const ADD_USER='ADD_USER';
 export const UPDATE_USER='UPDATE_USER';
+
+export const ADD_SCHEDULE='ADD_SCHEDULE';
+export const ADD_SCHEDULEs='ADD_SCHEDULEs';
+export const REMOVE_SCHEDULE='REMOVE_SCHEDULE';
+export const UPDATE_SCHEDULE='UPDATE_SCHEDULE';
+export const CLEAR_SCHEDULES='CLEAR_SCHEDULES';
+
+export const SET_DATES='SET_DATES';

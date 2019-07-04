@@ -7,9 +7,10 @@ export const Users = (state= {
 }, action) => {
     switch(action.type){
         case ActionTypes.ADD_USER:
-            var User = action.payload;
-            return {...state,isLoading:false, Users: state.Users.concat(User)};
+            return {...state,isLoading:false, Users: state.Users.concat(action.payload)}; 
         default:
             return state
     }
 }
+
+const getUserById = (arr,id) => arr.findIndex(user=>user.id===id)
