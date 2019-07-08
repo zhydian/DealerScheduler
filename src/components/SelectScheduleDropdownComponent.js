@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListGroupItem,ListGroup } from 'reactstrap';
+import { Container,Col,Row } from 'reactstrap';
 
 class SelectScheduleDropdown extends React.Component {
 
@@ -20,21 +20,37 @@ class SelectScheduleDropdown extends React.Component {
       this.props.toggle(false)
     }
   }
-
+  renderLabels(){
+    return(['O/CDN','O/CD','O/CN'].map(val=><Col onClick={()=>this.props.onSetLabel(val)} style={{backgroundColor:'white',border:'solid 1px'}}>{val}</Col>))
+  }
+  renderShifts(){
+    return(
+      this.props.Shifts.sort((a,b)=>{
+        if(a.StartTime>b.StartTime){
+          return 1
+        }else{
+          return -1 
+        }
+      }).map(shift=>{
+        
+        var start=shift.StartTime.toDate().getHours()
+        var startWithPeriod = start>12?(start-12)+"pm":start+"am"
+        var end=shift.EndTime.toDate().getHours()
+        var endWithPeriod = end>12?(end-12)+"pm":end==0?'12am':end+"am"
+        return(<Col style={{backgroundColor:shift.BackColor,padding:'5px'}} onClick={()=>this.props.onSelect(start,end)}>{startWithPeriod}-{endWithPeriod}</Col>)
+      })
+    )
+  }
   render() {
     return (
-         <div ref={this.setWrapperRef} style={{position:'absolute',zIndex:100,backgroundColor:'red',visibility:this.props.dropdownOpen?'visible':'hidden'}}>
-            <div>
-                <ListGroup>
-                    {this.props.hasSchedule &&<ListGroupItem onClick={()=>this.props.deleteSchedule()}>Off</ListGroupItem>    }
-                    <ListGroupItem onClick={()=>this.props.onSelect('11','16')}>11am-4pm</ListGroupItem>
-                    <ListGroupItem onClick={()=>this.props.onSelect('11','18')}>11am-6pm</ListGroupItem>
-                    <ListGroupItem onClick={()=>this.props.onSelect('11','19')}>11am-7pm</ListGroupItem>
-                    <ListGroupItem onClick={()=>this.props.onSelect('12','21')}>12pm-9pm</ListGroupItem>
-                    <ListGroupItem onClick={()=>this.props.onSelect('14','21')}>2pm-9pm</ListGroupItem>
-                    <ListGroupItem onClick={()=>this.props.onSelect('21','4')}>9pm-4am</ListGroupItem>
-                </ListGroup>
-            </div>
+         <div ref={this.setWrapperRef} style={{position:'absolute',zIndex:100, visibility:this.props.dropdownOpen?'visible':'hidden'}}>
+            <Row style={{width:'300px',border:'solid 2px #000000'}}>
+                    {this.props.hasSchedule &&<Col style={{backgroundColor:'grey'}} onClick={()=>this.props.deleteSchedule()}>X</Col>    }
+                    {this.renderShifts()}
+            </Row>
+            <Row style={{width:'300px',border:'solid 2px #000000'}}>
+              {this.renderLabels()}
+            </Row>
          </div>
     );
   }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Row, Col } from 'reactstrap'
 import ScheduledItem from './ScheduledItemComponent'
 import { connect } from 'react-redux';
+import { thisExpression } from '@babel/types';
 
 class RenderSchedule extends Component {
     state = {
@@ -10,8 +11,8 @@ class RenderSchedule extends Component {
 
     renderList(StartDate) {
         return(this.props.Users.Users.map((user,index)=>{
-            return(<Row key={index}>
-                <Col  md={3}>{user.name.last}, {user.name.first}</Col>
+            return(<Row key={index} noGutters>
+                <Col md={3}>{user.name.last}, {user.name.first}</Col>
                 <Col>{this.getSchedule(0,user.id)}</Col>
                 <Col>{this.getSchedule(1,user.id)}</Col>
                 <Col>{this.getSchedule(2,user.id)}</Col>
@@ -22,6 +23,23 @@ class RenderSchedule extends Component {
                 <Col md={1}>{this.getScheduledHours(user.id)}</Col>
             </Row>)
         }))
+    }
+
+    RenderScheduleTime(StartTime,EndTime){
+        var backColor = this.props.Settings.Shifts.filter(shift=>{
+            var stime = shift.StartTime.toDate().getHours()===StartTime.toDate().getHours()
+            var etime = shift.EndTime.toDate().getHours()===EndTime.toDate().getHours()
+            return(stime&&etime)
+        })
+
+        if(backColor.length>0){
+          backColor = backColor[0].BackColor  
+        }
+        return(
+            <span style={{backgroundColor:backColor,display:'block',textAlign:'center',border:'solid 1px',borderColor:this.state.selected?'red':'black'}}>
+                {getTime(StartTime.toDate())}-{getTime(EndTime.toDate())}
+            </span>
+        )
     }
 
     getScheduledHours(userId){
@@ -58,9 +76,9 @@ class RenderSchedule extends Component {
             return (scheds.map((day,index)=>{
                 var diffTime = Math.abs(day.EndTime.toDate().getTime() - day.StartTime.toDate().getTime());
                 diffTime = (diffTime / (1000*60*60)) % 24
-                return(<ScheduledItem hasSchedule key={index} id={day.id} date={currentDate} UserId={userId}>{getTime(day.StartTime.toDate())}-{getTime(day.EndTime.toDate())}</ScheduledItem>)}))
+                return(<ScheduledItem hasSchedule key={index} id={day.id} date={currentDate} UserId={userId}>{this.RenderScheduleTime(day.StartTime,day.EndTime)}</ScheduledItem>)}))
         }else{
-            return <ScheduledItem date={currentDate} UserId={userId}>Off</ScheduledItem>
+            return <ScheduledItem date={currentDate} UserId={userId}><span style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span></ScheduledItem>
         }
         
     }
@@ -88,6 +106,7 @@ const getTime = (theTime) => {
         var hours = theTime.getHours();
         var ampm = (hours >= 12) ? "pm" : "am";
         if(hours>12) hours -=12
+        if(hours===0)hours=12
         return `${hours}${ampm}`
 }
 

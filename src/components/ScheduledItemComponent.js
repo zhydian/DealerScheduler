@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ScheduledItemDropdown from './SelectScheduleDropdownComponent'
-import { setSchedule,deleteSchedule } from '../redux/ActionCreators'
+import { setSchedule,deleteSchedule,setLabel } from '../redux/ActionCreators'
 import { connect } from 'react-redux'
 
 class ScheduledItem extends Component {
@@ -15,6 +15,11 @@ class ScheduledItem extends Component {
         this.setState({
           dropdownOpen: val
         });
+    }
+
+    setUserScheduleLabel = (theDate,UserId) => {
+        
+        this.props.setSchedule(theDate,UserId,this.props.id)
     }
 
     setUserSchedule = (StartTime,EndTime,UserId) => {
@@ -36,7 +41,6 @@ class ScheduledItem extends Component {
     }
 
     deleteSchedule = (id) =>{
-        //console.log("removing",id)
         this.props.deleteSchedule(this.props.id)
         this.toggleIt(false)
     }
@@ -47,7 +51,7 @@ class ScheduledItem extends Component {
             <div onDoubleClick={()=>this.toggleIt(!this.state.dropdownOpen)}>
                 {this.props.children}
             </div>
-            <ScheduledItemDropdown hasSchedule={this.props.hasSchedule} toggle={(val)=>this.toggleIt(val)} onSelect={(StartTime,EndTime)=>this.setUserSchedule(StartTime,EndTime,this.props.UserId)} deleteSchedule={()=>this.deleteSchedule(this.props.id)} dropdownOpen={this.state.dropdownOpen}/>
+            <ScheduledItemDropdown Shifts={this.props.Settings.Shifts} hasSchedule={this.props.hasSchedule} toggle={(val)=>this.toggleIt(val)} onSelect={(StartTime,EndTime)=>this.setUserSchedule(StartTime,EndTime,this.props.UserId)} deleteSchedule={()=>this.deleteSchedule(this.props.id)} dropdownOpen={this.state.dropdownOpen}/>
             </>
         )
     }
@@ -61,7 +65,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => ({
     setSchedule: (StartDate,EndDate,UserId,DocId) => dispatch(setSchedule(StartDate,EndDate,UserId,DocId)),
-    deleteSchedule:(docId)=>dispatch(deleteSchedule(docId))
+    deleteSchedule:(docId)=>dispatch(deleteSchedule(docId)),
+    setLabel: (theDate,Label) => dispatch(setLabel(theDate,Label))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(ScheduledItem)

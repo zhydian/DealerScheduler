@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Button } from 'reactstrap'
-import { getSchedules, setDates } from '../redux/ActionCreators'
+import { getSchedules, getShifts, setDates } from '../redux/ActionCreators'
 import RenderSchedule from './RenderSchedule'
 import { connect } from 'react-redux';
 
@@ -14,7 +14,9 @@ class Home extends Component {
 
     componentDidMount() {
         //this.props.setDates(getStartOfWeek(new Date(),getEndOfWeek(new Date())))
+        this.props.getShifts()
         this.props.getSchedules(this.props.Settings.StartDate, this.props.Settings.EndDate);
+        
     }
 
     changeDate = (days) => {
@@ -48,6 +50,9 @@ class Home extends Component {
                     Employee
                 </Col>
                 <Col>
+                    Sunday
+                </Col>
+                <Col>
                     Monday
                 </Col>
                 <Col>
@@ -65,9 +70,6 @@ class Home extends Component {
                 <Col>
                     Saturday
                 </Col>
-                <Col>
-                    Sunday
-                </Col>
                 <Col md={1}>
                     Hours
                 </Col>
@@ -84,6 +86,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = (dispatch) => ({
     getSchedules: (StartDate, EndDate) => dispatch(getSchedules(StartDate, EndDate)),
+    getShifts: () => dispatch(getShifts()),
     setDates: (StartDate, EndDate) => dispatch(setDates(StartDate, EndDate))
 })
 

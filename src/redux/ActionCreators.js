@@ -4,6 +4,18 @@ import firebase from '../Firebase/firebase'
 const db = firebase.firestore()
 var currentSchedule=null; 
 
+export const getShifts = () => (dispatch) => {
+    firebase.firestore().collection("ShiftTimes").get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            var shifts = {
+                id:doc.id,
+                ...doc.data()
+            }
+            dispatch(addShiftTimes(shifts))
+        });
+    });
+}
+
 export const getUsers = () => (dispatch) => {
     firebase.firestore().collection("Users").get().then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
@@ -15,8 +27,43 @@ export const getUsers = () => (dispatch) => {
         });
     });
 
+const ShiftTimes = [
+    [14,21,'#FFFF00',0],//2-9
+    [12,21,'#E26B0A',0],//12-9
+    [11,21,'#CCC0DA',0],//11-9
+    [11,18,'#FFC000',0],//11-6
+    [12,19,'#E26B0A',0],//12-7
+    [14,21,'#FF0000',0],//2-9
+    [14,19,'#E26B0A',0],//2-7
+    [16,0,'#76933C',0],//4-12
+    [21,4,'#FFFF00',0],//9-4
+    [18,3,'#28FB05',0],//6-3
+    [18,2,'#660033',0],//6-2
+    [19,2,'#E26B0A',0],//7-2
+    [18,1,'#D9D9D9',0],//6-1
+]
 
 
+ShiftTimes.map(shift=>{
+    var docRef = db.collection("ShiftTimes").doc()
+    var start = new Date()
+    start.setHours(shift[0])
+    var end = new Date()
+    end.setHours(shift[1])
+    var Shift = {
+        StartTime:firebase.firestore.Timestamp.fromDate(start),
+        EndTime:firebase.firestore.Timestamp.fromDate(end),
+        BackColor:shift[2],
+        type:shift[3]
+    }
+    /* docRef.set(Shift)
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });  */
+})
 
 const users = [{ last:'Phan', first:'Jarreyah'},
 { last:'Mozer', first:'Matt'},
@@ -72,8 +119,8 @@ export const getSchedulesOld = (StartDate,EndDate) => (dispatch) => {
 }
 
 export const getSchedules = (StartDate,EndDate) => (dispatch) => {
-    StartDate = resetTime(StartDate)
-    EndDate = resetTime(EndDate)
+    StartDate = resetTime(StartDate,0)
+    EndDate = resetTime(EndDate,23)
     console.log("Start",StartDate,"End",EndDate)
     
     dispatch({type: ActionTypes.CLEAR_SCHEDULES})
@@ -99,7 +146,6 @@ export const getSchedules = (StartDate,EndDate) => (dispatch) => {
 }
 
 export const setSchedule = (StartDate,EndDate,UserId,docId) => (dispatch) => {
-    
     var docRef = db.collection("ScheduledDays").doc()
     if(docId) docRef = db.collection("ScheduledDays").doc(docId)
     docRef.set({
@@ -114,6 +160,25 @@ export const setSchedule = (StartDate,EndDate,UserId,docId) => (dispatch) => {
         console.error("Error adding document: ", error);
     });
 }
+
+export const setLabel = (theDate,Label,UserId,docId) => (dispatch) => {
+    
+    var docRef = db.collection("ScheduledDays").doc()
+    if(docId) docRef = db.collection("ScheduledDays").doc(docId)
+    docRef.set({
+        UserId: UserId,
+        StartTime: theDate,
+        Label:Label,
+        type:1
+    })
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+}
+
 export const deleteSchedule = (docId) => (dispatch) => {
     console.log("delete",docId)
     var docRef = db.collection("ScheduledDays").doc(docId)
@@ -142,10 +207,16 @@ export const removeSchedule = (payload) => ({
     payload: payload
 });
 
-function resetTime(time){
+export const addShiftTimes = (payload) => ({
+    type: ActionTypes.ADD_SHIFTTIMES,
+    payload: payload
+});
+
+
+function resetTime(time,setTo){
     time.setMinutes(0)
     time.setSeconds(0)
     time.setMilliseconds(0)
-    time.setHours(0)
+    time.setHours(setTo)
 return(time)
 }
