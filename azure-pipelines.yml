@@ -10,6 +10,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: source'
+  inputs:
+    PathtoPublish: public
+    ArtifactName: source
+
 - task: Npm@1
   displayName: 'npm install'
   inputs:
