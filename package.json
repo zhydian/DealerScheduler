@@ -20,7 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "npm test --ci --reporters=jest-junit --reporters=default --coverage --coverageReporters=cobertura --coverageReporters=html",
+    "test:ci": "npm test --ci --reporters=jest-junit --reporters=default --coverage --coverageReporters=cobertura --coverageReporters=html --verbose",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
