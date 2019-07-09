@@ -21,7 +21,6 @@ steps:
   inputs:
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: false
-    steps:
 
 - script: CI=true npm run test:ci
   displayName: 'NPM Run Test CI'
@@ -38,3 +37,10 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
+- task: AzureWebApp@1
+  displayName: 'Azure Web App Deploy: DealerSchedule'
+  inputs:
+    azureSubscription: 'Pay-As-You-Go (5c391c47-4b41-4276-a914-d7eff64a20cd)'
+    appType: webApp
+    appName: DealerSchedule
+    package: '$(System.DefaultWorkingDirectory)/build'
