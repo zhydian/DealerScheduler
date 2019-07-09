@@ -37,6 +37,9 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
+- script: npm run build
+  displayName: 'NPM Run Test CI'
+
 - task: AzureWebApp@1
   displayName: 'Azure Web App Deploy: DealerSchedule'
   inputs:
