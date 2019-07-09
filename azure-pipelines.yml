@@ -17,12 +17,7 @@ steps:
     verbose: false
     steps:
 
-- task: Npm@1
-  displayName: 'npm run unit test'
-  inputs:
-    command: custom
-    workingDir: '$(System.DefaultWorkingDirectory)'
-    verbose: true
-    customCommand: 'run test:ci'
+- script: CI=true npm run test:ci
+  displayName: 'NPM Run Test CI'
 
 
