@@ -2,25 +2,25 @@ import React, { Component } from 'react'
 import DateChanger from './DateChangerComponent'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { getSchedules, getShifts, setDates } from '../redux/ActionCreators'
+import { addDaysToDate } from '../functions/DateFunctions.js'
 import { connect } from 'react-redux';
 
 class Home extends Component {
 
     constructor(props) {
         super(props)
-
     }
 
-
-    componentDidMount() {
-       
+    changeDate = (fromDate,toDate)=>{
+        this.props.setDates(fromDate,toDate)
+        this.props.getSchedules(fromDate,toDate)
     }
 
     render() {
         return (<Container fluid style={{padding:'5px'}}>
             <Row className="text-center">
                <Col xs={{size:6,offset:4}}>
-                    <DateChanger dateFrom={new Date('December 17, 1995 03:24:00')}/>
+                    <DateChanger increment={7} dateFrom={this.props.Settings.StartDate} dateTo={this.props.Settings.EndDate} onPreviousClick={(fromDate,toDate)=>this.changeDate(fromDate,toDate)} onNextClick={(fromDate,toDate)=>this.changeDate(fromDate,toDate)} />
                </Col>
             </Row>
         </Container>)

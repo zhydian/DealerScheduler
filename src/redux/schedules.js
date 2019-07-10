@@ -8,7 +8,6 @@ export const Schedules = (state= {
     switch(action.type){
         case ActionTypes.ADD_SCHEDULE:
             var Schedule = action.payload;
-            console.log("timestamp",Schedule)
             return {...state,isLoading:false, Schedules: state.Schedules.concat(Schedule)};
         case ActionTypes.UPDATE_SCHEDULE:
             var Schedule = action.payload;

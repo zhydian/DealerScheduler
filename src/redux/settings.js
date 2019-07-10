@@ -1,4 +1,5 @@
 import * as ActionTypes from './ActionTypes';
+import { getEndOfWeek,getStartOfWeek } from '../functions/DateFunctions'
 
 export const Settings = (state= {
     StartDate:getStartOfWeek(new Date()),
@@ -15,14 +16,3 @@ export const Settings = (state= {
     }
 }
 
-function getStartOfWeek(startDate) {
-    var Sow = startDate.getDate() - startDate.getDay()
-    startDate.setDate(Sow)
-    return startDate;
-}
-
-function getEndOfWeek(startDate) {
-    var Sow = startDate.getDate() - startDate.getDay()-1 
-    startDate.setDate(Sow + 7)
-    return startDate;
-}
