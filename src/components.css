@@ -1,0 +1,35 @@
+.LeftButton {
+    border-radius: 5px 0px 0px 5px;
+    background-color:#E9ECEF;
+    border-style: solid;
+    border-width:1px;
+    border-color:#CED4DA;
+    padding:5px
+  }
+.RightButton {
+    border-radius: 0px 5px 5px 0px;
+    background-color:#E9ECEF;
+    border-style: solid;
+    border-width:1px;
+    border-color:#CED4DA;
+    padding:5px
+}
+.CenterDiv {
+    border-style: solid;
+    border-width:1px;
+    border-color:#CED4DA;
+    width: 40%;
+    text-align: center;
+    padding:5px
+}
+
+.RightButton:hover { 
+    background-color: rgb(93, 93, 93);
+    color: white;
+    cursor: pointer;
+  }
+.LeftButton:hover { 
+    background-color: rgb(93, 93, 93);
+    color: white;
+    cursor: pointer;
+  }
