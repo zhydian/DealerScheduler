@@ -1,10 +1,20 @@
-import { formatDate,addDaysToDate, getStartOfWeek,getEndOfWeek } from './DateFunctions.js'
+import { formatDate, formatTime, addDaysToDate, getStartOfWeek,getEndOfWeek } from './DateFunctions.js'
 
-test('Format dat to MM-DD-YYYYa',()=>{
+test('Format date to MM-DD-YYYYa',()=>{
     var date1 = new Date('December 17, 1995 03:24:00');
     expect(formatDate(date1)).toBe('12-17-95')
 })
 
+test('Format time to HHa',()=>{
+    var date1 = new Date('December 17, 1995 03:00:00');
+    var date2 = new Date('December 17, 1995 00:00:00');
+    var date3 = new Date('December 17, 1995 19:00:00');
+    var date4 = new Date('December 17, 1995 12:00:00');
+    expect(formatTime(date1)).toBe('3am') &&
+    expect(formatTime(date2)).toBe('12am') &&
+    expect(formatTime(date3)).toBe('7pm') &&
+    expect(formatTime(date4)).toBe('12pm')
+})
 test('Add Days to date',()=>{
     var initialDate = new Date('December 17, 2019 03:24:00');
     var nextDate = new Date('December 24, 2019 03:24:00');

@@ -24,3 +24,21 @@ export const getEndOfWeek = (startDate,day=0) => {
     startDate.setDate(Sow + 7)
     return startDate;
 }
+
+export const formatTime = (theTime) => {
+    var hours = theTime.getHours();
+    var ampm = (hours >= 12) ? "pm" : "am";
+    if(hours>12) hours -=12
+    if(hours===0)hours=12
+    return `${hours}${ampm}`
+}
+
+export const DAYSOFWEEK = {
+    SUNDAY:0,
+    MONDAY:1,
+    TUESDAY:2,
+    WEDNESDAY:3,
+    THURSDAY:4,
+    FRIDAY:5,
+    SATURDAY:6,
+}

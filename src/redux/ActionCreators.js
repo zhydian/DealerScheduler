@@ -127,8 +127,10 @@ export const getSchedules = (StartDate,EndDate) => (dispatch) => {
     if(currentSchedule) currentSchedule()
     currentSchedule = firebase.firestore().collection("ScheduledDays").where('StartTime','>=',StartDate).where('StartTime','<=',EndDate).onSnapshot(function(snapshot) {
         snapshot.docChanges().forEach(function(change) {
+            var sd = change.doc.data().StartTime
             var schedule = {
                 id:change.doc.id,
+                dayOfWeek:sd?sd.toDate().getDay():'',
                 ...change.doc.data()
             }
             if (change.type === "added") {
@@ -148,6 +150,8 @@ export const getSchedules = (StartDate,EndDate) => (dispatch) => {
 export const setSchedule = (StartDate,EndDate,UserId,docId) => (dispatch) => {
     var docRef = db.collection("ScheduledDays").doc()
     if(docId) docRef = db.collection("ScheduledDays").doc(docId)
+
+    console.log("keep",StartDate,EndDate,UserId,docId)
     docRef.set({
         UserId: UserId,
         StartTime: StartDate,
@@ -211,6 +215,7 @@ export const addShiftTimes = (payload) => ({
     type: ActionTypes.ADD_SHIFTTIMES,
     payload: payload
 });
+
 
 
 function resetTime(time,setTo){

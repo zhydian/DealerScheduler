@@ -1,27 +1,18 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'reactstrap'
-import ScheduledItem from './ScheduledItemComponent'
 import { connect } from 'react-redux';
-import { thisExpression } from '@babel/types';
+import ScheduledItem  from './ScheduledItemComponent'
+import { formatTime, DAYSOFWEEK } from '../functions/DateFunctions.js'
+import EmployeeSchedule from './EmployeeScheduleComponent';
 
 class RenderSchedule extends Component {
     state = {
         hours:0
     }
 
-    renderList(StartDate) {
+    renderList() {
         return(this.props.Users.Users.map((user,index)=>{
-            return(<Row key={index} noGutters>
-                <Col md={3}>{user.name.last}, {user.name.first}</Col>
-                <Col>{this.getSchedule(0,user.id)}</Col>
-                <Col>{this.getSchedule(1,user.id)}</Col>
-                <Col>{this.getSchedule(2,user.id)}</Col>
-                <Col>{this.getSchedule(3,user.id)}</Col>
-                <Col>{this.getSchedule(4,user.id)}</Col>
-                <Col>{this.getSchedule(5,user.id)}</Col>
-                <Col>{this.getSchedule(6,user.id)}</Col>
-                <Col md={1}>{this.getScheduledHours(user.id)}</Col>
-            </Row>)
+            return(<EmployeeSchedule user={user}/>)
         }))
     }
 
@@ -37,27 +28,12 @@ class RenderSchedule extends Component {
         }
         return(
             <span style={{backgroundColor:backColor,display:'block',textAlign:'center',border:'solid 1px',borderColor:this.state.selected?'red':'black'}}>
-                {getTime(StartTime.toDate())}-{getTime(EndTime.toDate())}
+                {formatTime(StartTime.toDate())}-{formatTime(EndTime.toDate())}
             </span>
         )
     }
 
-    getScheduledHours(userId){
-        var scheds = this.props.Schedules.Schedules.filter(day=>day.UserId===userId)
-        return(scheds.map(day=>{
-        var diffTime = Math.abs(day.EndTime.toDate().getTime() - day.StartTime.toDate().getTime());
-        return((diffTime / (1000*60*60)) % 24)
-        }).reduce((a,b)=>a+b,0))
-    }
-
-    /*
-    return(scheds.reduce((day)=>{
-        var diffTime = Math.abs(day.EndTime.toDate().getTime() - day.StartTime.toDate().getTime());
-        diffTime = (diffTime / (1000*60*60)) % 24
-        return(diffTime)
-        })
-})
-*/
+  
 
     getSchedule(dayOfWeek,userId){
         var checkDate = new Date(this.props.Settings.StartDate)
@@ -73,20 +49,19 @@ class RenderSchedule extends Component {
         })
 
         if(scheds.length>0){
-            return (scheds.map((day,index)=>{
+        return (scheds.map((day,index)=>{
                 var diffTime = Math.abs(day.EndTime.toDate().getTime() - day.StartTime.toDate().getTime());
                 diffTime = (diffTime / (1000*60*60)) % 24
-                return(<ScheduledItem hasSchedule key={index} id={day.id} date={currentDate} UserId={userId}>{this.RenderScheduleTime(day.StartTime,day.EndTime)}</ScheduledItem>)}))
+               return(<ScheduledItem hasSchedule key={index} id={day.id} date={currentDate} UserId={userId}>{this.RenderScheduleTime(day.StartTime,day.EndTime)}</ScheduledItem>)}))
         }else{
             return <ScheduledItem date={currentDate} UserId={userId}><span style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span></ScheduledItem>
         }
-        
     }
 
     render(){
         return(
            <>
-           {this.renderList(this.props.Settings.StartDate)}
+           {this.renderList()}
            </>
         )
     }
@@ -100,14 +75,9 @@ const mapStateToProps = state => {
     }
 }
 
+function isOdd(num) { return num % 2;}
 
 
-const getTime = (theTime) => {
-        var hours = theTime.getHours();
-        var ampm = (hours >= 12) ? "pm" : "am";
-        if(hours>12) hours -=12
-        if(hours===0)hours=12
-        return `${hours}${ampm}`
-}
+
 
 export default connect(mapStateToProps,null)(RenderSchedule)
