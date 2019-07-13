@@ -7,12 +7,21 @@ import EmployeeSchedule from './EmployeeScheduleComponent';
 
 class RenderSchedule extends Component {
     state = {
-        hours:0
+        hours:0,
+        shift:''
+    }
+
+    renderShiftLabel(user) {
+        return(<div>test</div>)
     }
 
     renderList() {
         return(this.props.Users.Users.map((user,index)=>{
-            return(<EmployeeSchedule user={user}/>)
+            return(<div key={user.id}>
+            {/*this.renderShiftLabel(user)*/}
+            <EmployeeSchedule user={user}/>
+            </div>
+            )
         }))
     }
 
@@ -75,7 +84,6 @@ const mapStateToProps = state => {
     }
 }
 
-function isOdd(num) { return num % 2;}
 
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import DateChanger from './DateChangerComponent'
 import { Container, Row, Col, Button } from 'reactstrap'
-import { getSchedules, getShifts, setDates } from '../redux/ActionCreators'
+import { getSchedules, getShifts, setDates,getShiftLabels } from '../redux/ActionCreators'
 import { addDaysToDate } from '../functions/DateFunctions.js'
 import { connect } from 'react-redux';
 import RenderSchedule from './RenderSchedule';
@@ -20,6 +20,7 @@ class Home extends Component {
     
     componentDidMount() {
         this.props.getShifts()
+        this.props.getShiftLabels()
         this.props.getSchedules(this.props.Settings.StartDate, this.props.Settings.EndDate); 
     }
 
@@ -76,8 +77,9 @@ const mapStateToProps = state => {
     }
 }
 const mapDispatchToProps = (dispatch) => ({
-    getSchedules: (StartDate, EndDate) => dispatch(getSchedules(StartDate, EndDate)),
     getShifts: () => dispatch(getShifts()),
+    getShiftLabels: () => dispatch(getShiftLabels()),
+    getSchedules: (StartDate, EndDate) => dispatch(getSchedules(StartDate, EndDate)),
     setDates: (StartDate, EndDate) => dispatch(setDates(StartDate, EndDate))
 })
 

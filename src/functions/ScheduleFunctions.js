@@ -1,7 +1,6 @@
 export const assembleSchedule=(StartDate,EndDate,UserId,Schedules)=>{
     var Schedule =
     Schedules.filter(Schedule=>{
-        console.log("STart",Schedule.EndTime.toDate(),"End",EndDate)
         return(Schedule.UserId===UserId&&
         Schedule.StartTime.toDate()>=StartDate &&
         Schedule.StartTime.toDate()<=EndDate)

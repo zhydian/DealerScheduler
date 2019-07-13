@@ -8,12 +8,10 @@ import { assembleSchedule } from '../functions/ScheduleFunctions'
 class EmployeeSchedule extends Component {
 
     getScheduledDay = (Schedule,Day)=>{
-        console.log("SCHEDY",Schedule)
         var scheduledDay = Schedule.schedule.find(val=>val.dayOfWeek===Day)
         
         if(scheduledDay){
-            console.log("Day",Day,scheduledDay.dayOfWeek)
-            return <ScheduledItem hasSchedule key={Day} id={scheduledDay.id} date={scheduledDay.StartDate} UserId={this.props.user.id}>{this.RenderScheduleTime(scheduledDay.StartTime,scheduledDay.EndTime)}</ScheduledItem>
+            return <ScheduledItem hasSchedule key={Day} id={scheduledDay.id} date={scheduledDay.StartDate} UserId={this.props.user.id}><span className='ScheduleTime'>{this.RenderScheduleTime(scheduledDay.StartTime,scheduledDay.EndTime)}</span></ScheduledItem>
         }
         var currentDate = new Date(this.props.Settings.StartDate)
         return <ScheduledItem  date={addDaysToDate(currentDate,Day)} UserId={this.props.user.id}><span style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span></ScheduledItem>
@@ -50,7 +48,7 @@ class EmployeeSchedule extends Component {
             <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.THURSDAY)}</Col>
             <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.FRIDAY)}</Col>
             <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.SATURDAY)}</Col>
-            <Col className='TitleColumn' md={1}></Col>
+            <Col className='TitleColumn' md={1}>{schedule.hours}</Col>
         </Row>)
     }
 }
