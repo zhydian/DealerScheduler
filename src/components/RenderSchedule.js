@@ -12,7 +12,7 @@ class RenderSchedule extends Component {
     }
 
     renderShiftLabel(user) {
-        return(<div>test</div>)
+        return(<div>testing</div>)
     }
 
     renderList() {
