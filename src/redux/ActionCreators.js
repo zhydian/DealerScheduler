@@ -3,6 +3,7 @@ import firebase from '../Firebase/firebase'
 
 const db = firebase.firestore()
 var currentSchedule=null; 
+var currentUsers = null;
 
 export const getShifts = () => (dispatch) => {
     firebase.firestore().collection("ShiftTimes").get().then(function(querySnapshot) {
@@ -28,16 +29,45 @@ export const getShiftLabels = () => (dispatch) => {
     });
 }
 
-export const getUsers = () => (dispatch) => {
+export const getUsers = (StartDate,EndDate) => (dispatch) => {
+        
+    dispatch({type: ActionTypes.CLEAR_SCHEDULES})
+    if(currentUsers) currentSchedule()
+    currentUsers = firebase.firestore().collection("Users").orderBy("order","asc").onSnapshot(function(snapshot) {
+        snapshot.docChanges().forEach(function(change) {
+            var user = {
+                id:change.doc.id,
+                Availability:change.doc.data().availability?change.doc.data().availability:{},
+                ...change.doc.data()
+            }
+            if (change.type === "added") {
+                dispatch(addUser(user))
+            }
+            if (change.type === "modified") {
+                dispatch(updateUser(user))
+            }
+            if (change.type === "removed") {
+                console.log("trying to remove")
+                dispatch(removeUser(user))
+            }
+        });
+    });
+}
+
+export const getUsersOld = () => (dispatch) => {
     firebase.firestore().collection("Users").orderBy("order","asc").get().then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
             var user = {
                 id:doc.id,
+                Availability:doc.data().availability?doc.data().availability:{},
                 ...doc.data()
             }
             dispatch(addUser(user))
         });
     });
+
+   
+    
 
 const ShiftTimes = [
     /*[14,21,'#FFFF00',0],//2-9
@@ -160,22 +190,6 @@ users.map(user=>{
 })
 }
 
-export const getSchedulesOld = (StartDate,EndDate) => (dispatch) => {
-    console.log("getting Schedules", StartDate)
-    dispatch({type: ActionTypes.CLEAR_SCHEDULES})
-    firebase.firestore().collection("ScheduledDays").where('StartTime','>=',StartDate).where('StartTime','<=',EndDate).get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-            var schedule = {
-                id:doc.id,
-                ...doc.data()
-            }
-            dispatch(addSchedule(schedule))
-        });
-    });
-}
-
 export const getSchedules = (StartDate,EndDate) => (dispatch) => {
     StartDate = resetTime(StartDate,0)
     EndDate = resetTime(EndDate,23)
@@ -223,16 +237,15 @@ export const setSchedule = (StartDate,EndDate,UserId,docId) => (dispatch) => {
     });
 }
 
-export const setLabel = (theDate,Label,UserId,docId) => (dispatch) => {
+export const setAvailability = (Day,Availability,UserId) => (dispatch) => {
     
-    var docRef = db.collection("ScheduledDays").doc()
-    if(docId) docRef = db.collection("ScheduledDays").doc(docId)
-    docRef.set({
-        UserId: UserId,
-        StartTime: theDate,
-        Label:Label,
-        type:1
-    })
+    var docRef = db.collection("Users").doc(UserId)
+    var updateAvailability = {};
+        updateAvailability[`Availability.${Day}`] = Availability;
+    
+    console.log('setAvail',Day,Availability,UserId)
+    
+        docRef.update(updateAvailability)
     .then(function(docRef) {
         console.log("Document written with ID: ", docRef);
     })
@@ -251,6 +264,16 @@ export const setDates = (StartDate,EndDate) => (dispatch) => dispatch({type: Act
 
 export const addUser = (payload) => ({
     type: ActionTypes.ADD_USER,
+    payload: payload
+});
+
+export const updateUser = (payload) => ({
+    type: ActionTypes.UPDATE_USER,
+    payload: payload
+});
+
+export const removeUser = (payload) => ({
+    type: ActionTypes.REMOVE_USER,
     payload: payload
 });
 

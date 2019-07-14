@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'reactstrap'
 import { connect } from 'react-redux';
-import ScheduledItem  from './ScheduledItemComponent'
 import { formatTime, DAYSOFWEEK, addDaysToDate } from '../functions/DateFunctions.js'
 import { assembleSchedule } from '../functions/ScheduleFunctions'
 
@@ -9,12 +8,16 @@ class EmployeeSchedule extends Component {
 
     getScheduledDay = (Schedule,Day)=>{
         var scheduledDay = Schedule.schedule.find(val=>val.dayOfWeek===Day)
-        
-        if(scheduledDay){
-            return <ScheduledItem hasSchedule key={Day} id={scheduledDay.id} date={scheduledDay.StartDate} UserId={this.props.user.id}><span className='ScheduleTime'>{this.RenderScheduleTime(scheduledDay.StartTime,scheduledDay.EndTime)}</span></ScheduledItem>
-        }
         var currentDate = new Date(this.props.Settings.StartDate)
-        return <ScheduledItem  date={addDaysToDate(currentDate,Day)} UserId={this.props.user.id}><span style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span></ScheduledItem>
+        var availability = this.props.user.Availability[Day];
+
+        if(scheduledDay){
+            return <span onDoubleClick={()=>this.props.onDoubleClick(scheduledDay.StartTime.toDate(),scheduledDay.id,Day)} className='ScheduleTime'>{this.RenderScheduleTime(scheduledDay.StartTime,scheduledDay.EndTime)}</span>
+        }
+        if(availability)
+            return<span style={{display:'block',textAlign:'center',border:'solid 1px'}} onDoubleClick={()=>this.props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)}>{availability}</span>
+    
+        return <span onDoubleClick={()=>this.props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)} style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span>
     }
 
     RenderScheduleTime(StartTime,EndTime){
@@ -36,7 +39,7 @@ class EmployeeSchedule extends Component {
 
     render(){
         if(!this.props.Schedules.isLoading){
-        var schedule= assembleSchedule(this.props.Settings.StartDate,this.props.Settings.EndDate,this.props.user.id,this.props.Schedules.Schedules)   
+        var schedule=assembleSchedule(this.props.Settings.StartDate,this.props.Settings.EndDate,this.props.user.id,this.props.Schedules.Schedules)   
         }
         
        return(<Row noGutters>

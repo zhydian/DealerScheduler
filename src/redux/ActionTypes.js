@@ -1,5 +1,6 @@
 export const ADD_USER='ADD_USER';
 export const UPDATE_USER='UPDATE_USER';
+export const REMOVE_USER='REMOVE_USER'
 
 export const ADD_SCHEDULE='ADD_SCHEDULE';
 export const ADD_SCHEDULEs='ADD_SCHEDULEs';
