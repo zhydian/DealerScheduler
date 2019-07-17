@@ -7,9 +7,19 @@ export function formatDate(newDate = new Date(), separator = '-') {
     return `${month < 10 ? `0${month}` : `${month}`}${separator}${date}${separator}${year}`
 }
 
+export function formatDateForInput(newDate = new Date(), separator = '-') {
+    var theDate = new Date(newDate)
+    theDate.setDate(theDate.getDate());
+    let date = theDate.getDate();
+    let month = theDate.getMonth() + 1;
+    let year = theDate.getFullYear().toString();
+    return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+}
+
 export const addDaysToDate = (theDate,days) => {
-    theDate.setDate(theDate.getDate() + days)
-    return(theDate)
+    var newDate = new Date(theDate)
+    newDate.setDate(newDate.getDate() + days)
+    return(newDate)
 }
 
 export const getStartOfWeek = (startDate,day=0) => {
@@ -41,4 +51,12 @@ export const DAYSOFWEEK = {
     THURSDAY:4,
     FRIDAY:5,
     SATURDAY:6,
+}
+
+export const ResetTime=(time,setTo=0)=>{
+    time.setMinutes(0)
+    time.setSeconds(0)
+    time.setMilliseconds(0)
+    time.setHours(setTo)
+return(time)
 }

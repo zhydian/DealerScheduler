@@ -4,6 +4,7 @@ import firebase from '../Firebase/firebase'
 const db = firebase.firestore()
 var currentSchedule=null; 
 var currentUsers = null;
+var currentRequestOff = null;
 
 export const getShifts = () => (dispatch) => {
     firebase.firestore().collection("ShiftTimes").get().then(function(querySnapshot) {
@@ -33,7 +34,7 @@ export const getUsers = (StartDate,EndDate) => (dispatch) => {
         
     dispatch({type: ActionTypes.CLEAR_SCHEDULES})
     if(currentUsers) currentSchedule()
-    currentUsers = firebase.firestore().collection("Users").orderBy("order","asc").onSnapshot(function(snapshot) {
+    currentUsers = firebase.firestore().collection("Users").orderBy("order","asc").limit(100).onSnapshot(function(snapshot) {
         snapshot.docChanges().forEach(function(change) {
             var user = {
                 id:change.doc.id,
@@ -219,6 +220,31 @@ export const getSchedules = (StartDate,EndDate) => (dispatch) => {
     });
 }
 
+export const getRequestOff = (StartDate,EndDate) => (dispatch) => {
+        
+    if(currentRequestOff) currentRequestOff()
+    currentRequestOff = firebase.firestore().collection("RequestOff").where('RequestedDate','>=',StartDate).where('RequestedDate','<=',EndDate).onSnapshot(function(snapshot) {
+        snapshot.docChanges().forEach(function(change) {
+            var RequestedDayOff = {
+                id:change.doc.id,
+                ...change.doc.data()
+            }
+            console.log("Found REQ")
+            if (change.type === "added") {
+                dispatch(addRequestOff(RequestedDayOff))
+            }
+            if (change.type === "modified") {
+                dispatch(updateRequestOff(RequestedDayOff))
+            }
+            if (change.type === "removed") {
+                console.log("trying to remove")
+                dispatch(removeRequestOff(RequestedDayOff))
+            }
+        });
+    });
+}
+
+
 export const setSchedule = (StartDate,EndDate,UserId,docId) => (dispatch) => {
     var docRef = db.collection("ScheduledDays").doc()
     if(docId) docRef = db.collection("ScheduledDays").doc(docId)
@@ -246,6 +272,50 @@ export const setAvailability = (Day,Availability,UserId) => (dispatch) => {
     console.log('setAvail',Day,Availability,UserId)
     
         docRef.update(updateAvailability)
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+}
+
+export const setRequestedDayOff = (Data) => (dispatch) => {
+    console.log('data from req',Data)
+    
+    var docRef = db.collection("RequestOff").doc()
+    docRef.set(Data)
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+}
+
+export const updateRequestedDayOff = (id,approved=false,denied=false) => {
+    console.log("test",id)
+    var docRef = db.collection("RequestOff").doc(id)
+    var data={
+        approved:approved,
+        denied:denied
+    }
+    docRef.update(data)
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+}
+
+export const lockSchedule = (id,StartTime,EndTime) => {
+    console.log("test",id)
+    var docRef = db.collection("Users").doc(id)
+    var updateLockedSchedule = {};
+    
+    updateLockedSchedule[`Schedule.${StartTime.getDay()}`] = {StartTime:StartTime,EndTime:EndTime};
+    docRef.update(updateLockedSchedule)
     .then(function(docRef) {
         console.log("Document written with ID: ", docRef);
     })
@@ -291,7 +361,22 @@ export const removeSchedule = (payload) => ({
     type: ActionTypes.REMOVE_SCHEDULE,
     payload: payload
 });
+//
+export const addRequestOff = (payload) => ({
+    type: ActionTypes.ADD_REQUEST_OFF,
+    payload: payload
+});
 
+export const updateRequestOff = (payload) => ({
+    type: ActionTypes.UPDATE_REQUEST_OFF,
+    payload: payload
+});
+
+export const removeRequestOff = (payload) => ({
+    type: ActionTypes.REMOVE_REQUEST_OFF,
+    payload: payload
+});
+//
 export const addShiftTimes = (payload) => ({
     type: ActionTypes.ADD_SHIFTTIMES,
     payload: payload

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, Row, Container } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, Row, Container, Badge } from 'reactstrap';
 import { setSchedule,deleteSchedule,setAvailability } from '../redux/ActionCreators'
 import { connect } from 'react-redux'
 
@@ -15,7 +15,7 @@ class ShiftPickerModal extends React.Component {
         var startWithPeriod = start>12?(start-12)+"pm":start+"am"
         var end=shift.EndTime.toDate().getHours()
         var endWithPeriod = end>12?(end-12)+"pm":end==0?'12am':end+"am"
-        return(<Col key={shift.id} md={4} style={{backgroundColor:shift.BackColor,padding:'5px'}} onClick={()=>this.setUserSchedule(start,end)}>{startWithPeriod}-{endWithPeriod}</Col>)
+      return(<Col key={shift.id} md={4} style={{backgroundColor:shift.BackColor,padding:'5px'}} onClick={()=>this.setUserSchedule(start,end)}>{startWithPeriod}-{endWithPeriod}{shift.type===1&&<Badge style={{float:'right',margin:'3px 3px 0 0'}} color='secondary'>Floor</Badge>}</Col>)
       })
     )
   }
@@ -78,7 +78,6 @@ updateAvailability = (availability) =>{
 
             </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.props.toggleModal}>Do Something</Button>{' '}
             <Button color="secondary" onClick={this.props.toggleModal}>Cancel</Button>
           </ModalFooter>
         </Modal>

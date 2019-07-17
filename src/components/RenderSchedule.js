@@ -35,12 +35,12 @@ class RenderSchedule extends Component {
             }
         }));
       }
-    
 
     renderList() {
         return(this.props.Users.Users.map((user,index)=>{
+           
             return(<div key={user.id}>
-            {/*this.renderShiftLabel(user)*/}
+            
             <EmployeeSchedule onDoubleClick={(selectedDate,selectedShiftId,selectedDayOfWeek)=>this.toggleShiftChangeModal(user.id,selectedDate,selectedShiftId,selectedDayOfWeek)} user={user}/>
             </div>
             )

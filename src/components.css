@@ -71,3 +71,17 @@
 .ScheduleTime {
   font-variant: small-caps
 }
+
+.dealerOptions-enter {
+  max-height: 0px;
+}
+.dealerOptions-enter-active {
+  max-height: 150px;
+  transition:max-height 500ms ease-in;
+}
+.dealerOptions-exit {
+  max-height: 0px;
+}
+.dealerOptions-exit-active {
+  transition:max-height 5000ms ease-out;
+}
