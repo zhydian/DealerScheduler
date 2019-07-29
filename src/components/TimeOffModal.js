@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,Row, Container, Col } from 'reactstrap';
-import {formatDateForInput, ResetTime} from '../functions/DateFunctions'
+import {formatDateForInput} from '../functions/DateFunctions'
 
 class TimeOffModal extends React.Component {
   constructor(props) {

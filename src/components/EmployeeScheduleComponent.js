@@ -1,105 +1,61 @@
-import React, { Component } from 'react'
-import { Row, Col,Badge } from 'reactstrap'
-import { connect } from 'react-redux';
-import { setRequestedDayOff } from '../redux/ActionCreators'
-import { formatTime, DAYSOFWEEK, addDaysToDate } from '../functions/DateFunctions.js'
-import { assembleSchedule, isDark } from '../functions/ScheduleFunctions'
+import React, { useState, useContext } from 'react'
+import { Row, Col } from 'reactstrap'
+import { DAYSOFWEEK, addDaysToDate } from '../functions/DateFunctions.js'
+import { assembleSchedule } from '../functions/ScheduleFunctions'
 import EmployeeOptions from './EmployeeOptionsComponent'
 import RequestedOffItem from './RequestOffItemComponent'
+import { DataContext } from '../Providers/DataProvider'
+import ScheduledTime from './ScheduledTimeComponent.js';
 
-class EmployeeSchedule extends Component {
+function EmployeeSchedule(props) {
+    const [slideToggle, setSlideToggle] = useState(false);
+    const { state } = useContext( DataContext )
 
-    state={
-        slideToggle:false,
-        roToggle:false
-    }
-
-    getScheduledDay = (Schedule,Day)=>{
-        var scheduledDay = Schedule.schedule.find(val=>val.dayOfWeek===Day)
-        var currentDate = new Date(this.props.Settings.StartDate)
-        var scheduleDate =  new Date(this.props.Settings.StartDate)
+    const getScheduledDay = (Schedule,Day)=>{
+        var scheduledDay = Schedule.schedule[Day]
+        var currentDate = new Date(state.Settings.StartDate)
+        var scheduleDate =  new Date(state.Settings.StartDate)
         scheduleDate.setDate(scheduleDate.getDate()+Day)
-        var availability = this.props.user.Availability[Day];
+        var availability = props.user.Availability[Day];
 
-        var RequestedOff = this.props.RequestOff.RequestOff.find(day=>{
-            return(day.RequestedDate.toDate().getTime()===scheduleDate.getTime()&&day.UserId===this.props.user.id&&day.approved)
+        var RequestedOff = state.Schedules.DaysOff.find(day=>{
+            return(day.RequestedDate.toDate().getTime()===scheduleDate.getTime()&&day.UserId===props.user.id&&day.approved)
         })
 
         if(RequestedOff){
             return <RequestedOffItem Day={Day} roId={RequestedOff.id} currentDate={currentDate} />
         }
+        
         if(scheduledDay){
-            return <span onDoubleClick={()=>this.props.onDoubleClick(scheduledDay.StartTime.toDate(),scheduledDay.id,Day)} className='ScheduleTime'>{this.RenderScheduleTime(scheduledDay.StartTime,scheduledDay.EndTime)}</span>
+            return <ScheduledTime onDoubleClick={props.onDoubleClick} scheduledDay={scheduledDay} Day={Day} locked={scheduledDay.locked}/>
         }
+       
         if(availability)
-            return<span style={{display:'block',textAlign:'center',border:'solid 1px'}} onDoubleClick={()=>this.props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)}>{availability}</span>
+            return<span style={{display:'block',textAlign:'center',border:'solid 1px'}} onDoubleClick={()=>props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)}>{availability}</span>
     
-        return <span onDoubleClick={()=>this.props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)} style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span>
+        return <span onDoubleClick={()=>props.onDoubleClick(addDaysToDate(currentDate,Day),null,Day)} style={{backgroundColor:'grey',display:'block',textAlign:'center',border:'solid 1px'}}>X</span>
     }
 
-    RenderScheduleTime(StartTime,EndTime){
-        var Shift = this.props.Settings.Shifts.find(shift=>{
-            var stime = shift.StartTime.toDate().getHours()===StartTime.toDate().getHours()
-            var etime = shift.EndTime.toDate().getHours()===EndTime.toDate().getHours()
-            return(stime&&etime)
-        })
-        var backColor="#ffffff"
-        var type=0
-        var foreColor="#000000"
-        if(Shift){
-          backColor = Shift.BackColor
-          type=Shift.type
-        }
-        if(isDark(backColor)){
-            foreColor="#ffffff"
-        }
+    
+        var schedule=assembleSchedule(state.Settings.StartDate,state.Settings.EndDate,props.user,state.Schedules.Schedules,state.Schedules.DaysOff)
         return(
-            <span style={{backgroundColor:backColor,color:foreColor,display:'block',textAlign:'center',border:'solid 1px',borderColor:'black'}}>
-                {formatTime(StartTime.toDate())}-{formatTime(EndTime.toDate())} {type===1&&<Badge color='secondary'>Fl</Badge>}
-            </span>
-        )
-    }
-
-    toggleUserSlide(){
-        this.setState({
-            slideToggle:!this.state.slideToggle
-        })
-    }
-
-    render(){
-        if(!this.props.Schedules.isLoading){
-        var schedule=assembleSchedule(this.props.Settings.StartDate,this.props.Settings.EndDate,this.props.user.id,this.props.Schedules.Schedules,this.props.RequestOff.RequestOff)   
-        }
-       return(
        <>
        <Row noGutters>
-            <Col md={3}  onClick={()=>this.toggleUserSlide()} className='TitleColumn'>{this.props.user.name.last}, {this.props.user.name.first}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.SUNDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.MONDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.TUESDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.WEDNESDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.THURSDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.FRIDAY)}</Col>
-            <Col>{this.getScheduledDay(schedule,DAYSOFWEEK.SATURDAY)}</Col>
+            <Col md={3}  onClick={()=>{setSlideToggle(!slideToggle);console.log("Dealer",props.user)}} className='TitleColumn'>{props.user.name.last}, {props.user.name.first}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.SUNDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.MONDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.TUESDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.WEDNESDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.THURSDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.FRIDAY)}</Col>
+            <Col>{getScheduledDay(schedule,DAYSOFWEEK.SATURDAY)}</Col>
             <Col className='TitleColumn' md={1}>{schedule.hours}</Col>
         </Row>
-        <EmployeeOptions toggle={this.state.slideToggle} activateToggle={()=>this.toggleUserSlide()} user={this.props.user} SaveRequest={(data)=>this.props.setRequestedDayOff(data)}/>
+        <EmployeeOptions toggle={slideToggle} activateToggle={()=>setSlideToggle(!slideToggle)} user={props.user}/>
         </>
         )
-    }
-}
-const mapDispatchToProps = (dispatch) => ({
-    setRequestedDayOff: (data) => dispatch(setRequestedDayOff(data))
-})
-
-const mapStateToProps = state => {
-    return {
-        Users: state.Users,
-        Schedules: state.Schedules,
-        Settings: state.Settings,
-        RequestOff: state.RequestOff
-    }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EmployeeSchedule)
+
+export default EmployeeSchedule
 

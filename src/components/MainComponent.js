@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch,Redirect } from "react-router";
-import { Jumbotron } from 'reactstrap'
-import { getUsers, getSchedules } from '../redux/ActionCreators'
 import Home from './HomeComponent'
-import { connect } from 'react-redux';
+import { AddDealersToFirebase } from '../functions/ScheduleFunctions'
 
 function Header (props) {
     return(
@@ -17,16 +15,18 @@ function Header (props) {
 class Main extends Component {
 
     componentDidMount(){
-        this.props.getUsers();
+      if(false){
+        AddDealersToFirebase()
+      }
     }
 
+    Home =() => <Home/>
     render() {
-        
         return (
             <div>
               <Header />
             <Switch location={this.props.location}>
-              <Route path='/home' component={Home} />
+              <Route path='/home' component={this.Home} />
               <Redirect to="/home" />
             </Switch>
             </div>
@@ -34,14 +34,4 @@ class Main extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    getUsers: () => dispatch(getUsers())
-})
-
-const mapStateToProps = state => {
-    return {
-        Users:state.Users
-    }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Main)
+export default Main

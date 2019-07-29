@@ -53,7 +53,7 @@ export const DAYSOFWEEK = {
     SATURDAY:6,
 }
 
-export const ResetTime=(time,setTo=0)=>{
+export const ResetTime = (time,setTo=0) => {
     time.setMinutes(0)
     time.setSeconds(0)
     time.setMilliseconds(0)

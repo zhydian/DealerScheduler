@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { Row, Col,Button, ButtonGroup } from 'reactstrap'
+import { Row, Col} from 'reactstrap'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { setRequestedDayOff} from '../functions/FirebaseConnections'
 import TimeOffModal from './TimeOffModal'
 
 export default class EmployeeOptions extends Component {
 
     setTimeOff=(data)=>{
-        this.props.SaveRequest(data)
+        setRequestedDayOff(data)
         this.props.activateToggle()
     }
 

@@ -1,6 +1,6 @@
 import React,{ Component } from 'react'
 import { Badge } from 'reactstrap'
-import { updateRequestedDayOff } from '../redux/ActionCreators'
+import { updateRequestedDayOff } from '../functions/FirebaseConnections'
 import { FaBan,FaCalendarTimes } from 'react-icons/fa';
 
 export default class RequestOffItem extends Component {

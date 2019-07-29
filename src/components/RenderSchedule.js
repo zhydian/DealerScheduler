@@ -1,72 +1,53 @@
-import React, { Component } from 'react'
-import { Row, Col } from 'reactstrap'
-import { connect } from 'react-redux';
-import { formatTime, DAYSOFWEEK } from '../functions/DateFunctions.js'
+import React, { useContext, useState } from 'react'
 import EmployeeSchedule from './EmployeeScheduleComponent';
 import ShiftPickerModal from './ShiftPickerModalComponent'
+import { DataContext } from '../Providers/DataProvider';
 
-class RenderSchedule extends Component {
-    state = {
+function RenderSchedule () {
+   /* state = {
         hours:0,
         shift:'',
-        SelectShiftModal:false,
-        modalData:{
-            SelectedUser:'',
-            selectedShiftId:'',
-            selectedDate:'',
-            selectedDayOfWeek:''
-        }
-        
     }
+*/
+    const [selectShiftModal,setSelectShiftModal] = useState(false)
+    const [modalData,setModalData] = useState({
+        SelectedUser:'',
+        selectedShiftId:'',
+        selectedDate:'',
+        selectedDayOfWeek:''
+    })
+    const {state} = useContext( DataContext )
 
-    renderShiftLabel(user) {
-        return(<div>testing</div>)
-    }
-
-    toggleShiftChangeModal(selectedUser='',selectedDate='',selectedShiftId=null,selectedDayOfWeek='') {
-        console.log(selectedDayOfWeek,selectedUser)
-        this.setState(prevState => ({
-            SelectShiftModal: !prevState.SelectShiftModal,
-            modalData:{
+    const toggleShiftChangeModal = (selectedUser='',selectedDate='',selectedShiftId=null,selectedDayOfWeek='') => {
+            setSelectShiftModal(!selectShiftModal)
+            setModalData({
                 SelectedUser:selectedUser,
                 selectedShiftId:selectedShiftId,
                 selectedDate:selectedDate,
                 selectedDayOfWeek:selectedDayOfWeek
             }
-        }));
+        )
       }
 
-    renderList() {
-        return(this.props.Users.Users.map((user,index)=>{
-           
-            return(<div key={user.id}>
-            
-            <EmployeeSchedule onDoubleClick={(selectedDate,selectedShiftId,selectedDayOfWeek)=>this.toggleShiftChangeModal(user.id,selectedDate,selectedShiftId,selectedDayOfWeek)} user={user}/>
+    const renderList = () => {
+        return(state.Users.Users.map((user,index)=>{
+            return(
+            <div key={user.id}>
+            <EmployeeSchedule onDoubleClick={(selectedDate,selectedShiftId,selectedDayOfWeek)=>toggleShiftChangeModal(user.id,selectedDate,selectedShiftId,selectedDayOfWeek)} user={user}/>
             </div>
             )
         }))
     }
 
-    render(){
         return(
            <>
-           {this.renderList()}
-           <ShiftPickerModal modalData={this.state.modalData} date={this.state.modalData.selectedDate} userId={this.state.modalData.SelectedUser} shiftId={this.state.modalData.selectedShiftId} toggle={this.state.SelectShiftModal} toggleModal={()=>this.toggleShiftChangeModal()}/>
-           </>
+           {renderList()}
+           <ShiftPickerModal modalData={modalData} toggle={selectShiftModal} toggleModal={()=>setSelectShiftModal(!selectShiftModal)}/>
+          </>
         )
-    }
-}
-
-const mapStateToProps = state => {
-    return {
-        Users: state.Users,
-        Schedules: state.Schedules,
-        Settings: state.Settings
-    }
+    
 }
 
 
 
-
-
-export default connect(mapStateToProps,null)(RenderSchedule)
+export default RenderSchedule
