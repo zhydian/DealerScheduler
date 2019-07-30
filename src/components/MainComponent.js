@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch,Redirect } from "react-router";
 import Home from './HomeComponent'
-import { AddDealersToFirebase } from '../functions/ScheduleFunctions'
+import { AddDealersToFirebase,addShiftsToFirebase } from '../functions/ScheduleFunctions'
 
 function Header (props) {
     return(
@@ -18,6 +18,7 @@ class Main extends Component {
       if(false){
         AddDealersToFirebase()
       }
+      addShiftsToFirebase(false)
     }
 
     Home =() => <Home/>

@@ -120,13 +120,14 @@ export default class FirebaseConnections {
     }
 
 
-    setSchedule = (StartDate, EndDate, UserId, docId) => {
-        var docRef = firebase.firestore().collection("Users").doc(UserId).collection("ScheduledDays").doc()
-        if (docId) docRef = firebase.firestore().collection("Users").doc(UserId).collection("ScheduledDays").doc(docId)
+    setSchedule = (Schedule) => {
+        var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId).collection("ScheduledDays").doc()
+        if (Schedule.docId) docRef = firebase.firestore().collection("Users").doc(Schedule.UserId).collection("ScheduledDays").doc(Schedule.DocId)
         docRef.set({
-            UserId: UserId,
-            StartTime: StartDate,
-            EndTime: EndDate
+            UserId: Schedule.UserId,
+            StartTime: Schedule.StartTime,
+            EndTime: Schedule.EndTime,
+            type:Schedule.type
         })
             .then(function (docRef) {
                 console.log("Document written with ID: ", docRef);
@@ -175,7 +176,8 @@ export const lockSchedule = (Schedule,remove=false) => {
         if(!remove){
                 updateAvailability[`LockedSchedule.${Schedule.dayOfWeek}`] = {
                 StartTime:Schedule.StartTime,
-                EndTime:Schedule.EndTime
+                EndTime:Schedule.EndTime,
+                type:Schedule.type
             };
         }
         

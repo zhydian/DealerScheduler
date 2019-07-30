@@ -144,24 +144,26 @@ export default class DataProvider extends React.Component {
     render() {
         return <DataContext.Provider value={{
             state: this.state,
-            setSchedule:(StartTime,EndTime,userId,shiftId,date)=>{
-                var start = new Date(date)
-                var end = new Date(date)
-                start.setHours(StartTime)
+            setSchedule:(Schedule)=>{
+                var start = new Date(Schedule.date)
+                var end = new Date(Schedule.date)
+                start.setHours(Schedule.StartDate)
                 start.setMinutes(0)
                 start.setSeconds(0)
                 start.setMilliseconds(0)
                 end.setMinutes(0)
                 end.setSeconds(0)
                 end.setMilliseconds(0)
-                end.setHours(EndTime)
+                end.setHours(Schedule.EndDate)
                 if(end.getHours()<start.getHours()){
                     end.setDate(end.getDate()+1)
                 }
-                this.firebaseFunctions.setSchedule(start,end,userId,shiftId)},
+                Schedule.StartTime = start
+                Schedule.EndTime = end
+                this.firebaseFunctions.setSchedule(Schedule)},
             unlockSchedule:(Schedule)=>{
                 console.log("schedule removed lock",Schedule)
-                this.firebaseFunctions.setSchedule(Schedule.StartTime,Schedule.EndTime,Schedule.UserId)
+                this.firebaseFunctions.setSchedule(Schedule)
                 unlockSchedule(Schedule)
             },
             changeDate:(StartDate,EndDate)=>{

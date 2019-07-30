@@ -14,13 +14,19 @@ const ShiftPickerModal = (props) => {
         var startWithPeriod = start > 12 ? (start - 12) + "pm" : start + "am"
         var end = shift.EndTime.toDate().getHours()
         var endWithPeriod = end > 12 ? (end - 12) + "pm" : end === 0 ? '12am' : end + "am"
-        return (<Col key={shift.id} md={4} style={{ backgroundColor: shift.BackColor, padding: '5px' }} onClick={() => setUserSchedule(start, end)}>{startWithPeriod}-{endWithPeriod}{shift.type === 1 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Floor</Badge>}</Col>)
+        return (<Col key={shift.id} md={4} style={{ backgroundColor: shift.BackColor, padding: '5px' }} onClick={() => setUserSchedule(start, end,shift.type)}>{startWithPeriod}-{endWithPeriod}{shift.type === 1 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Floor</Badge>}</Col>)
       })
     )
   }
 
-  const setUserSchedule=(start,end)=>{
-    setSchedule(start, end, props.modalData.SelectedUser, props.modalData.selectedShiftId, props.modalData.selectedDate)
+  const setUserSchedule=(start,end,type)=>{
+    setSchedule({
+      UserId:props.modalData.SelectedUser,
+      StartDate:start,
+      EndDate:end,
+      type:type,
+      DocId: props.modalData.selectedShiftId,
+      date: props.modalData.selectedDate})
     props.toggleModal()
   }
 

@@ -8,7 +8,6 @@ export const assembleSchedule = (StartDate, EndDate, User, Schedules, requestedD
     for (var d = new Date(StartDate); d <= new Date(EndDate); d.setDate(d.getDate() + 1)) {
         if (User.hasOwnProperty("LockedSchedule")) {
             if (User.LockedSchedule[d.getDay()]) {
-                console.log("user", User.LockedSchedule[d.getDay()])
                 var Schedule = {
                     ...User.LockedSchedule[d.getDay()],
                     dayOfWeek: d.getDay(),
@@ -35,7 +34,7 @@ export const assembleSchedule = (StartDate, EndDate, User, Schedules, requestedD
             Schedule.StartTime.toDate() <= EndDate)
     }).map(Schedule => {
         if (typeof newSchedule[Schedule.dayOfWeek] !== 'undefined') {
-            Schedule.hasLocked = true
+            //Schedule.hasLocked = true
         }
         newSchedule[Schedule.dayOfWeek] = Schedule
         return (Schedule)
@@ -135,8 +134,16 @@ export const addShiftsToFirebase = (run = false) => {
         [18,2,'#660033',0],//6-2
         [19,2,'#E26B0A',0],//7-2
         [18,1,'#D9D9D9',0],//6-1
-        */
         [18, 4, '#D9D9D9', 0],//6-1
+        
+       [19,3,'#E26B0A',0],//7-3,
+       [18,2,'#f75eff',1],//6-2 Floor
+       [18,4,'#f75eff',1],//6-4 Floor
+       [20,4,'#f75eff',1],//8-4 Floor
+       [21,4,'#f75eff',1],//9-4 Floor
+    
+    [19,4,'#E26B0A',0],//7-4
+    */
     ]
 
 
@@ -154,7 +161,9 @@ export const addShiftsToFirebase = (run = false) => {
             type: shift[3]
         }
         batch.set(docRef, Shift)
-        if (run) {
+        
+    })
+    if (run) {
             batch.commit()
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
@@ -163,7 +172,6 @@ export const addShiftsToFirebase = (run = false) => {
                     console.error("Error adding document: ", error);
                 });
         }
-    })
 }
 
 export const AddDealersToFirebase = () => {
