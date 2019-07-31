@@ -25,12 +25,10 @@ const ScheduledTime = (props) => {
     }
 
     const setUnlockSchedule=()=>{
-        console.log("Unlocking",scheduledDay)
         unlockSchedule(scheduledDay)
     }
 
     const setLockSchedule=()=>{
-        console.log("locking",scheduledDay)
         lockSchedule(scheduledDay)
     }
 
@@ -38,10 +36,10 @@ const ScheduledTime = (props) => {
         foreColor="#ffffff"
     }
         return(
-            <span onMouseEnter={()=>{setLockToggle(true);console.log("state",state)}} onMouseLeave={()=>setLockToggle(false)}style={{display:'block',textAlign:'center',border:'solid 1px',backgroundColor:backColor,color:foreColor}}>
+            <span onMouseEnter={()=>{setLockToggle(true)}} onMouseLeave={()=>setLockToggle(false)}style={{display:'block',textAlign:'center',border:'solid 1px #000000',backgroundColor:backColor,color:foreColor}}>
                 <span onDoubleClick={()=>props.onDoubleClick(scheduledDay.StartTime.toDate(),scheduledDay.id,Day)} className='ScheduleTime'>
                     {lockToggle&&props.locked&&<Badge onClick={()=>setUnlockSchedule()} style={{float:'right',margin:'3px 3px 0px 0px'}} color="secondary" pill><FaLock/></Badge>}
-                    {formatTime(scheduledDay.StartTime.toDate())}-{formatTime(scheduledDay.EndTime.toDate())} {scheduledDay.type===1&&<Badge color='secondary'>Fl</Badge>}
+                    {formatTime(scheduledDay.StartTime.toDate())}-{formatTime(scheduledDay.EndTime.toDate())} {scheduledDay.type===1&&!lockToggle&&<Badge color='secondary'>Fl</Badge>}
                     {lockToggle&&!props.locked&&!props.scheduledDay.hasLocked&&<Badge onClick={()=>setLockSchedule(scheduledDay)} style={{float:'right',margin:'3px 3px 0px 0px'}} color="secondary"><FaUnlock/></Badge>}
                 </span>
                 

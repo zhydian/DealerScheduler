@@ -75,7 +75,6 @@ export default class FirebaseConnections {
     }
 
     getRequestOff = (StartDate, EndDate) => {
-
         var self = this;
         var daysOff = []
         if (currentRequestOff) currentRequestOff()
@@ -107,7 +106,7 @@ export default class FirebaseConnections {
     getShifts = () => {
         var ShiftTimes = []
         var self = this;
-        firebase.firestore().collection("ShiftTimes").get().then(function (querySnapshot) {
+        firebase.firestore().collection("ShiftTimes").orderBy("order").get().then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
                 var shifts = {
                     id: doc.id,

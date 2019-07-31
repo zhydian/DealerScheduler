@@ -18,7 +18,7 @@ class Main extends Component {
       if(false){
         AddDealersToFirebase()
       }
-      addShiftsToFirebase(false)
+      addShiftsToFirebase()
     }
 
     Home =() => <Home/>

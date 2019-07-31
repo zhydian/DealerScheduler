@@ -121,33 +121,33 @@ export const isDark = (color) => {
 export const addShiftsToFirebase = (run = false) => {
     const batch = db.batch()
     const ShiftTimes = [
-        /*[14,21,'#FFFF00',0],//2-9
-        [12,21,'#E26B0A',0],//12-9
-        [11,21,'#CCC0DA',0],//11-9
+        [11,16,'#FFC000',0],//11-4
         [11,18,'#FFC000',0],//11-6
-        [12,19,'#E26B0A',0],//12-7
-        [14,21,'#FF0000',0],//2-9
-        [14,19,'#E26B0A',0],//2-7
-        [16,0,'#76933C',0],//4-12
-        [21,4,'#FFFF00',0],//9-4
-        [18,3,'#28FB05',0],//6-3
-        [18,2,'#660033',0],//6-2
-        [19,2,'#E26B0A',0],//7-2
-        [18,1,'#D9D9D9',0],//6-1
-        [18, 4, '#D9D9D9', 0],//6-1
-        
-       [19,3,'#E26B0A',0],//7-3,
-       [18,2,'#f75eff',1],//6-2 Floor
-       [18,4,'#f75eff',1],//6-4 Floor
-       [20,4,'#f75eff',1],//8-4 Floor
-       [21,4,'#f75eff',1],//9-4 Floor
+        [11,21,'#CCC0DA',0],//11-9 
+        [12,19,'#E26B0A',0],//12-7 
+        [12,21,'#E26B0A',0],//12-9  
+        [14,21,'#FFFF00',0],//2-9  
+        [14,19,'#E26B0A',0],//2-7  
+        [16,0,'#76933C',0],//4-12  
+        [18, 4,'#D9D9D9',0],//6-1  
+        [18,2,'#660033',0],//6-2   
+        [18,3,'#28FB05',0],//6-3  
+        [19,2,'#E26B0A',0],//7-2 
+        [19,3,'#E26B0A',0],//7-3  
+        [19,4,'#E26B0A',0],//7-4
+        [21,4,'#FFFF00',0],//9-4  
+
+       [18,2,'#f75eff',1],//6-2 Floor   
+       [18,4,'#f75eff',1],//6-4 Floor   
+       [20,4,'#f75eff',1],//8-4 Floor   
+       [21,4,'#f75eff',1],//9-4 Floor   
     
-    [19,4,'#E26B0A',0],//7-4
+    /*
     */
     ]
 
 
-    ShiftTimes.forEach(shift => {
+    ShiftTimes.forEach((shift,index) => {
 
         var docRef = db.collection("ShiftTimes").doc()
         var start = new Date()
@@ -158,7 +158,8 @@ export const addShiftsToFirebase = (run = false) => {
             StartTime: firebase.firestore.Timestamp.fromDate(start),
             EndTime: firebase.firestore.Timestamp.fromDate(end),
             BackColor: shift[2],
-            type: shift[3]
+            type: shift[3],
+            order: index
         }
         batch.set(docRef, Shift)
         
