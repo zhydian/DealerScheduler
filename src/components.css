@@ -85,3 +85,30 @@
 .dealerOptions-exit-active {
   transition:max-height 5000ms ease-out;
 }
+
+.borderBottom {
+  border-bottom: 1px solid black
+}
+
+.roadmapCol {
+  border: 1px solid black
+}
+
+.roadmapTitle {
+  border: 1px solid black;
+  background-color: lightgray;
+  text-align: center 
+}
+
+.roadmapTitle.leftSide {
+  border-radius: 25px 0 0 0
+}
+
+.roadmapTitle.rightSide {
+  border-radius: 0 25px 0 0
+}
+
+.roadmapTitle.single {
+  border-radius: 25px 25px 0 0
+}
+
