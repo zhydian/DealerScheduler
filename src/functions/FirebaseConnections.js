@@ -19,7 +19,7 @@ export default class FirebaseConnections {
         var self = this;
         if (currentUsers) currentUsers()
         var Users = []
-        currentUsers = firebase.firestore().collection("Users").orderBy("order", "asc").limit(3).onSnapshot(function (snapshot) {
+        currentUsers = firebase.firestore().collection("Users").orderBy("order", "asc").limit(3000).onSnapshot(function (snapshot) {
             snapshot.docChanges().forEach(function (change) {
                 var user = {
                     id: change.doc.id,
