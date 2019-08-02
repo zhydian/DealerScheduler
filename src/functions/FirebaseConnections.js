@@ -19,7 +19,7 @@ export default class FirebaseConnections {
         var self = this;
         if (currentUsers) currentUsers()
         var Users = []
-        currentUsers = firebase.firestore().collection("Users").orderBy("order", "asc").limit(1000).onSnapshot(function (snapshot) {
+        currentUsers = firebase.firestore().collection("Users").orderBy("order", "asc").limit(3).onSnapshot(function (snapshot) {
             snapshot.docChanges().forEach(function (change) {
                 var user = {
                     id: change.doc.id,
@@ -88,12 +88,12 @@ export default class FirebaseConnections {
                     daysOff.push(RequestedDayOff)
                 }
                 if (change.type === "modified") {
-                    daysOff=[]
+                    daysOff = []
                     self.ScheduleFunctions.UpdateRequestOff(RequestedDayOff)
                     return
                 }
                 if (change.type === "removed") {
-                    daysOff=[]
+                    daysOff = []
                     self.ScheduleFunctions.RemoveRequestOff(RequestedDayOff)
                 }
             });
@@ -121,103 +121,105 @@ export default class FirebaseConnections {
 
     setSchedule = (Schedule) => {
         var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId).collection("ScheduledDays").doc()
-        if (Schedule.docId) docRef = firebase.firestore().collection("Users").doc(Schedule.UserId).collection("ScheduledDays").doc(Schedule.DocId)
-        docRef.set({
+        if (Schedule.DocId) {
+            docRef = firebase.firestore().collection("Users").doc(Schedule.UserId).collection("ScheduledDays").doc(Schedule.DocId)
+        }
+        return (docRef.set({
             UserId: Schedule.UserId,
             StartTime: Schedule.StartTime,
             EndTime: Schedule.EndTime,
-            type:Schedule.type
+            type: Schedule.type
         })
             .then(function (docRef) {
                 console.log("Document written with ID: ", docRef);
             })
             .catch(function (error) {
                 console.error("Error adding document: ", error);
-            });
+            }));
     }
 
-    
+
 }
 
-export const deleteSchedule = (docId,UserId) => {
+export const deleteSchedule = (docId, UserId) => {
     var docRef = firebase.firestore().collection("Users").doc(UserId).collection("ScheduledDays").doc(docId)
     docRef.delete()
 }
 
 
-export const setAvailability = (Day,Availability,UserId) => {
+export const setAvailability = (Day, Availability, UserId) => {
     var docRef = firebase.firestore().collection("Users").doc(UserId)
     var updateAvailability = {};
-        updateAvailability[`Availability.${Day}`] = Availability;
-        docRef.update(updateAvailability)
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+    updateAvailability[`Availability.${Day}`] = Availability;
+    docRef.update(updateAvailability)
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
 }
 
-export const setRequestedDayOff = (Data)  => {
+export const setRequestedDayOff = (Data) => {
     var docRef = firebase.firestore().collection("RequestOff").doc()
     docRef.set(Data)
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
 }
 
-export const lockSchedule = (Schedule,remove=false) => {
-   var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId)
+export const lockSchedule = (Schedule, remove = false) => {
+    var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId)
     var updateAvailability = {};
-        if(!remove){
-                updateAvailability[`LockedSchedule.${Schedule.dayOfWeek}`] = {
-                StartTime:Schedule.StartTime,
-                EndTime:Schedule.EndTime,
-                type:Schedule.type
-            };
-        }
-        
-        docRef.update(updateAvailability)
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
-    deleteSchedule(Schedule.id,Schedule.UserId)
+    if (!remove) {
+        updateAvailability[`LockedSchedule.${Schedule.dayOfWeek}`] = {
+            StartTime: Schedule.StartTime,
+            EndTime: Schedule.EndTime,
+            type: Schedule.type
+        };
+    }
+
+    docRef.update(updateAvailability)
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+    deleteSchedule(Schedule.id, Schedule.UserId)
 }
 
 
 
 export const unlockSchedule = (Schedule) => {
-   var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId)
+    var docRef = firebase.firestore().collection("Users").doc(Schedule.UserId)
     var updateAvailability = {};
-                updateAvailability[`LockedSchedule.${Schedule.dayOfWeek}`] = firebase.firestore.FieldValue.delete();
-        docRef.update(updateAvailability)
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+    updateAvailability[`LockedSchedule.${Schedule.dayOfWeek}`] = firebase.firestore.FieldValue.delete();
+    return (docRef.update(updateAvailability)
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        }));
 }
 
 
-export const updateRequestedDayOff = (id,approved=false,denied=false) => {
-    console.log("test",id)
+export const updateRequestedDayOff = (id, approved = false, denied = false) => {
+    console.log("test", id)
     var docRef = db.collection("RequestOff").doc(id)
-    var data={
-        approved:approved,
-        denied:denied
+    var data = {
+        approved: approved,
+        denied: denied
     }
     docRef.update(data)
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
 }

@@ -34,7 +34,12 @@ export default class DataProvider extends React.Component {
             this.setState({
                 Users:{
                         ...this.state.Users,
-                        Users: this.state.Users.Users.map((user)=>{if(user.id===User.id){return(User)}return(user)})
+                        Users: this.state.Users.Users.map((user)=>{
+                            if(user.id===User.id){
+                                return(User)
+                            }
+                            return(user)
+                        })
                 }
             })
         },
@@ -63,9 +68,14 @@ export default class DataProvider extends React.Component {
             this.setState({
                 Schedules: {
                 ...this.state.Schedules,
-                Schedules: this.state.Schedules.Schedules.map((schedule)=>{if(schedule.id===Schedule.id){return(Schedule)}return(schedule)})
+                Schedules: this.state.Schedules.Schedules.map((schedule)=>{
+                    if(schedule.id===Schedule.id){
+                        return(Schedule)
+                    }
+                    return(schedule)})
                 }
             })
+            
         },
         RemoveSchedule: (Schedule) => {
             this.setState({
@@ -162,9 +172,12 @@ export default class DataProvider extends React.Component {
                 Schedule.EndTime = end
                 this.firebaseFunctions.setSchedule(Schedule)},
             unlockSchedule:(Schedule)=>{
-                console.log("schedule removed lock",Schedule)
-                this.firebaseFunctions.setSchedule(Schedule)
-                unlockSchedule(Schedule)
+                
+                    unlockSchedule(Schedule).then(
+                       this.firebaseFunctions.setSchedule(Schedule) 
+                    )
+                
+                
             },
             changeDate:(StartDate,EndDate)=>{
                 this.setState({

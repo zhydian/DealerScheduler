@@ -34,7 +34,7 @@ export const assembleSchedule = (StartDate, EndDate, User, Schedules, requestedD
             Schedule.StartTime.toDate() <= EndDate)
     }).map(Schedule => {
         if (typeof newSchedule[Schedule.dayOfWeek] !== 'undefined') {
-            //Schedule.hasLocked = true
+            Schedule.hasLocked = true
         }
         newSchedule[Schedule.dayOfWeek] = Schedule
         return (Schedule)
