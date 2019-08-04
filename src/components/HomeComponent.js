@@ -1,10 +1,8 @@
 import React, { useContext } from 'react'
 import DateChanger from './DateChangerComponent'
-import { Link } from 'react-router-dom'
 import { Container, Row, Col, Badge } from 'reactstrap'
-import { FaFileAlt } from 'react-icons/fa';
-import { addDaysToDate, formatDate } from '../functions/DateFunctions.js'
 import RenderSchedule from './RenderSchedule';
+import RenderDaysOfWeek from './RenderDaysOfWeekComponent'
 import { DataContext } from '../Providers/DataProvider'
 
 const Home = () => {
@@ -12,66 +10,29 @@ const Home = () => {
     return (
         <>
             <div className='sticky-top' style={{ backgroundColor: 'white' }}>
-                <Container style={{ paddingTop: '5px' }}>
-                    <Row className="text-center">
-                        <Col xs={{ size: 6, offset: 4 }}>
+                <Container style={{ paddingTop: '5px' }} fluid>
+                    <Row className="justify-content-center">
+                        <Col xs={12} xl={6}>
                             <DateChanger increment={7} dateFrom={state.Settings.StartDate} dateTo={state.Settings.EndDate} onPreviousClick={(fromDate, toDate) => changeDate(fromDate, toDate)} onNextClick={(fromDate, toDate) => changeDate(fromDate, toDate)} />
                         </Col>
                     </Row>
-                    <Row style={{ marginTop: '15px', position: 'sticky' }} noGutters>
-                        <Col md={3} className="TitleRoundedLeft">
-                            Employee()
-                </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/0`} target="_blank" style={{ textDecoration: 'none' }}>
-                                {formatDate(addDaysToDate(state.Settings.StartDate, 0))}<br />
-                                Sunday
-                </Link>
+                    <Row className={'d-none d-xl-flex'} style={{ marginTop: '15px', position: 'sticky' }} noGutters>
+                        <Col xl={3} className="TitleRoundedLeft">
+                            Employee
                         </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/1`} target="_blank" style={{ textDecoration: 'none' }}>
-                                {formatDate(addDaysToDate(state.Settings.StartDate, 1))}<br />
-                                Monday</Link>
+                        <Col className="d-xl">
+                            <RenderDaysOfWeek />
                         </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/2`} target="_blank" style={{ textDecoration: 'none' }}>
-                                {formatDate(addDaysToDate(state.Settings.StartDate, 2))}<br />
-                                Tuesday
-                             </Link>
-                        </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/3`} target="_blank" style={{ textDecoration: 'none' }}>
-                                {formatDate(addDaysToDate(state.Settings.StartDate, 3))}<br />
-                                Wednesday</Link>
-                        </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/4`} target="_blank" style={{ textDecoration: 'none' }}>
-                                {formatDate(addDaysToDate(state.Settings.StartDate, 4))}<br />
-                                Thursday
-                            </Link>
-                </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/5`} target="_blank"  style={{ textDecoration: 'none' }}>
-                            {formatDate(addDaysToDate(state.Settings.StartDate, 5))}<br />
-                            Friday
-                        </Link>
-                </Col>
-                        <Col className="TitleRoundedCenter">
-                            <Link to={`roadmap/6`} target="_blank" style={{ textDecoration: 'none' }}>
-                            {formatDate(addDaysToDate(state.Settings.StartDate, 6))}<br />
-                            Saturday
-                            </Link>
-                </Col>
-                        <Col md={1} className="TitleRoundedRight">
-                            Hours
-                </Col>
+                        <Col xl={1} className="TitleRoundedCenter">Hours</Col>
                     </Row>
-                </Container></div>
-            <Container>
+                </Container>
+            </div>
+            <Container style={{padding:'0'}} fluid>
                 <RenderSchedule {...state} />
             </Container>
         </>)
 }
+
 
 
 export default Home

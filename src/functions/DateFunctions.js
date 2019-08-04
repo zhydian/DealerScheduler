@@ -37,10 +37,12 @@ export const getEndOfWeek = (startDate,day=0) => {
 
 export const formatTime = (theTime) => {
     var hours = theTime.getHours();
+    var mins = theTime.getMinutes()
     var ampm = (hours >= 12) ? "pm" : "am";
     if(hours>12) hours -=12
     if(hours===0)hours=12
-    return `${hours}${ampm}`
+    var min = mins===0?'':`:${mins}`
+    return `${hours}${min}${ampm}`
 }
 
 export const DAYSOFWEEK = {
@@ -52,6 +54,7 @@ export const DAYSOFWEEK = {
     FRIDAY:5,
     SATURDAY:6,
 }
+export const DayOfWeekArray = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export const ResetTime = (time,setTo=0) => {
     time.setMinutes(0)

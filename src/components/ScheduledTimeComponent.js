@@ -1,7 +1,7 @@
 import React,{ useState,useContext } from 'react'
 import { DataContext } from '../Providers/DataProvider'
 import { isDark } from '../functions/ScheduleFunctions'
-import { formatTime } from '../functions/DateFunctions.js'
+import ScheduledTimeDisplay from './ScheduledTimeDisplayComponent'
 import { Badge } from 'reactstrap'
 import { lockSchedule } from '../functions/FirebaseConnections'
 import { FaLock,FaUnlock } from 'react-icons/fa';
@@ -39,7 +39,8 @@ const ScheduledTime = (props) => {
             <span onMouseEnter={()=>{setLockToggle(true)}} onMouseLeave={()=>setLockToggle(false)}style={{display:'block',textAlign:'center',border:'solid 1px #000000',backgroundColor:backColor,color:foreColor}}>
                 <span onDoubleClick={()=>props.onDoubleClick(scheduledDay.StartTime.toDate(),scheduledDay.id,Day)} className='ScheduleTime'>
                     {lockToggle&&props.locked&&<Badge onClick={()=>setUnlockSchedule()} style={{float:'right',margin:'3px 3px 0px 0px'}} color="secondary" pill><FaLock/></Badge>}
-                    {formatTime(scheduledDay.StartTime.toDate())}-{formatTime(scheduledDay.EndTime.toDate())} {scheduledDay.type===1&&!lockToggle&&<Badge color='secondary'>Fl</Badge>}
+                    <ScheduledTimeDisplay StartTime={scheduledDay.StartTime} EndTime={scheduledDay.EndTime} showBadge={!lockToggle} type={scheduledDay.type} />
+                    
                     {lockToggle&&!props.locked&&!props.scheduledDay.hasLocked&&<Badge onClick={()=>setLockSchedule(scheduledDay)} style={{float:'right',margin:'3px 3px 0px 0px'}} color="secondary"><FaUnlock/></Badge>}
                 </span>
                 

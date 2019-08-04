@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, Row, Container, Badge } from 'reactstrap';
 import { DataContext } from '../Providers/DataProvider'
 import { deleteSchedule, setAvailability} from '../functions/FirebaseConnections';
+import ScheduledTimeDisplay from './ScheduledTimeDisplayComponent';
 
 
 const ShiftPickerModal = (props) => {
@@ -10,11 +11,14 @@ const ShiftPickerModal = (props) => {
   const RenderShifts = () => {
     return (
       state.Settings.Shifts.map(shift => {
-        var start = shift.StartTime.toDate().getHours()
-        var startWithPeriod = start > 12 ? (start - 12) + "pm" : start + "am"
-        var end = shift.EndTime.toDate().getHours()
-        var endWithPeriod = end > 12 ? (end - 12) + "pm" : end === 0 ? '12am' : end + "am"
-        return (<Col key={shift.id} md={4} style={{ backgroundColor: shift.BackColor, padding: '5px' }} onClick={() => setUserSchedule(start, end,shift.type)}>{startWithPeriod}-{endWithPeriod}{shift.type === 1 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Floor</Badge>}</Col>)
+        var start = shift.StartTime
+        var end = shift.EndTime
+        return (<Col key={shift.id} md={4} style={{ backgroundColor: shift.BackColor, padding: '5px' }} onClick={() => setUserSchedule(start, end,shift.type)}>
+        <ScheduledTimeDisplay StartTime={start} EndTime={end} showBadge={true}/>
+        {shift.type === 1 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Floor</Badge>}
+        {shift.type === 2 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Shift</Badge>}
+        {shift.type === 3 && <Badge style={{ float: 'right', margin: '3px 3px 0 0' }} color='secondary'>Admin</Badge>}
+        </Col>)
       })
     )
   }
@@ -22,8 +26,8 @@ const ShiftPickerModal = (props) => {
   const setUserSchedule=(start,end,type)=>{
     setSchedule({
       UserId:props.modalData.SelectedUser,
-      StartDate:start,
-      EndDate:end,
+      StartDate:start.toDate(),
+      EndDate:end.toDate(),
       type:type,
       DocId: props.modalData.selectedShiftId,
       date: props.modalData.selectedDate})

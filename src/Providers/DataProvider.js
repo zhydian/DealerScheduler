@@ -155,16 +155,17 @@ export default class DataProvider extends React.Component {
         return <DataContext.Provider value={{
             state: this.state,
             setSchedule:(Schedule)=>{
+                console.log("Setting Schedule",Schedule)
                 var start = new Date(Schedule.date)
                 var end = new Date(Schedule.date)
-                start.setHours(Schedule.StartDate)
-                start.setMinutes(0)
+                start.setHours(Schedule.StartDate.getHours())
+                start.setMinutes(Schedule.StartDate.getMinutes())
                 start.setSeconds(0)
                 start.setMilliseconds(0)
-                end.setMinutes(0)
                 end.setSeconds(0)
                 end.setMilliseconds(0)
-                end.setHours(Schedule.EndDate)
+                end.setHours(Schedule.EndDate.getHours())
+                end.setMinutes(Schedule.EndDate.getMinutes())
                 if(end.getHours()<start.getHours()){
                     end.setDate(end.getDate()+1)
                 }
