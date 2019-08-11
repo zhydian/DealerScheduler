@@ -1,7 +1,7 @@
-This is a start boilerplate that I use
-It contains:
+Software currently being designed for Hawks Prarie casino.
 
-React
-Redux
-Reactstrap
-Firebase
+Packages:
+#React
+#Redux
+#Reactstrap
+#Firebase
